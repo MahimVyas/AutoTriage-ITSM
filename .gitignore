@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Node
+node_modules/
+frontend/dist/
+
+# Env / logs / local db
+.env
+*.log
+logs/
+*.db
+smoke.db
+
+# OS
+.DS_Store
+
+# start.sh runtime state
+.run/
+backend/.venv/
+
+# Celery runtime artifacts
+celerybeat-schedule*
+celerybeat.pid
+*.pid

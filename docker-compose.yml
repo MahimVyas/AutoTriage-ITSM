@@ -1,0 +1,109 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: autotriage-postgres
+    environment:
+      POSTGRES_DB: autotriage
+      POSTGRES_USER: autouser
+      POSTGRES_PASSWORD: autopass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/initdb:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U autouser -d autotriage"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: autotriage-redis
+    command: redis-server --appendonly yes --requirepass redispass
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "redispass", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: autotriage-backend
+    environment: &backend_env
+      APP_NAME: AutoTriage-ITSM
+      DATABASE_URL: postgresql+asyncpg://autouser:autopass@postgres:5432/autotriage
+      REDIS_URL: redis://:redispass@redis:6379/0
+      CELERY_BROKER_URL: redis://:redispass@redis:6379/0
+      CELERY_RESULT_BACKEND: redis://:redispass@redis:6379/0
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GOOGLE_GEMINI_API_KEY: ${GOOGLE_GEMINI_API_KEY:-}
+      CONFIDENCE_THRESHOLD: "0.85"
+      LOG_LEVEL: INFO
+    command: >
+      sh -c "python seed.py &&
+             uvicorn src.main:app --host 0.0.0.0 --port 8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  worker:
+    build: ./backend
+    container_name: autotriage-worker
+    command: celery -A src.workers.sla_worker.celery_app worker --loglevel=info --concurrency=2
+    environment: *backend_env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  beat:
+    build: ./backend
+    container_name: autotriage-beat
+    command: celery -A src.workers.sla_worker.celery_app beat --loglevel=info
+    environment: *backend_env
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: autotriage-frontend
+    environment:
+      VITE_API_BASE: http://localhost:8000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:

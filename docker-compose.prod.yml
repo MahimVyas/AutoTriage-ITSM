@@ -1,0 +1,117 @@
+# Production stack for AutoTriage-ITSM.
+#
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# - No bind mounts: everything lives inside the images + named volumes
+# - Postgres/Redis are internal-only (no published ports)
+# - Frontend is a static Vite build served by nginx, proxying /api to FastAPI
+# - UI:    http://localhost:5173   (override with UI_PORT=80 ...)
+# - API:   http://localhost:8000   (override with API_PORT=443 / put behind TLS)
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: autotriage-postgres
+    environment:
+      POSTGRES_DB: autotriage
+      POSTGRES_USER: ${POSTGRES_USER:-autouser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-autopass}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/initdb:/docker-entrypoint-initdb.d:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: autotriage-redis
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redispass}
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redispass}
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$${REDIS_PASSWORD}\" ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: autotriage-backend
+    environment: &backend_env
+      APP_NAME: AutoTriage-ITSM
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-autouser}:${POSTGRES_PASSWORD:-autopass}@postgres:5432/autotriage
+      REDIS_URL: redis://:${REDIS_PASSWORD:-redispass}@redis:6379/0
+      CELERY_BROKER_URL: redis://:${REDIS_PASSWORD:-redispass}@redis:6379/0
+      CELERY_RESULT_BACKEND: redis://:${REDIS_PASSWORD:-redispass}@redis:6379/0
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GOOGLE_GEMINI_API_KEY: ${GOOGLE_GEMINI_API_KEY:-}
+      CONFIDENCE_THRESHOLD: "0.85"
+      LOG_LEVEL: INFO
+    command: >
+      sh -c "python seed.py &&
+             uvicorn src.main:app --host 0.0.0.0 --port 8000 --workers 2"
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  worker:
+    build: ./backend
+    container_name: autotriage-worker
+    command: celery -A src.workers.sla_worker.celery_app worker --loglevel=info --concurrency=2
+    environment: *backend_env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  beat:
+    build: ./backend
+    container_name: autotriage-beat
+    command: celery -A src.workers.sla_worker.celery_app beat --loglevel=info
+    environment: *backend_env
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: autotriage-frontend
+    ports:
+      - "${UI_PORT:-5173}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
