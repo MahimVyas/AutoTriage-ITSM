@@ -151,7 +151,7 @@ export default function AgentDashboard() {
           label="Breached in view"
           value={breachCount}
           icon={Inbox}
-          tone={breachCount > 0 ? 'text-red-600' : 'text-foreground'}
+          tone={breachCount > 0 ? 'text-red-600 dark:text-red-400' : 'text-foreground'}
         />
         <Stat label="Active filters" value={Object.values(filters).filter(Boolean).length} icon={Filter} />
         <Stat label="L1 agents online" value={agents.length} icon={Filter} />
@@ -227,7 +227,7 @@ export default function AgentDashboard() {
                       </td>
                       <td className="px-3 py-2.5">
                         <div className="flex items-center gap-1.5">
-                          <div className="h-1.5 w-14 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+                          <div className="h-1.5 w-14 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
                             <div
                               className={cn(
                                 'h-full rounded-full',
@@ -250,9 +250,9 @@ export default function AgentDashboard() {
                           className={cn(
                             'font-semibold tabular-nums',
                             sla.tone === 'bad'
-                              ? 'text-red-600'
+                              ? 'text-red-600 dark:text-red-400'
                               : sla.tone === 'warn'
-                                ? 'text-amber-600'
+                                ? 'text-amber-600 dark:text-amber-400'
                                 : 'text-muted-foreground'
                           )}
                         >

@@ -16,12 +16,12 @@ def test_pii_scrubber_redacts_everything():
 
     scrubber = get_pii_scrubber()
     text = (
-        "Call me on 555-123-4567 or jane.doe@corp.com. SSN 123-45-6789, "
+        "Call me on 555-123-4567 or ravi.kumar@corp.com. SSN 123-45-6789, "
         "card 4111 1111 1111 1111, server at 192.168.10.24, "
         "password=hunter2, api_key=abc123secret."
     )
     result = scrubber.scrub(text)
-    for leaked in ("123-45-6789", "4111", "jane.doe@", "192.168.10.24", "hunter2", "abc123secret"):
+    for leaked in ("123-45-6789", "4111", "ravi.kumar@", "192.168.10.24", "hunter2", "abc123secret"):
         assert leaked not in result.text, f"{leaked} leaked through the scrubber"
     assert scrubber.replacement in result.text
     assert result.total_redactions >= 6

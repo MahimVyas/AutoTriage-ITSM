@@ -40,13 +40,13 @@ from src.workers.sla_worker import compute_sla_deadline, sla_window_seconds
 # Sample users
 # --------------------------------------------------------------------------- #
 USERS = [
-    ("Avery Chen", "avery.chen@autotriage.dev", UserRole.EMPLOYEE),
+    ("Aarav Sharma", "aarav.sharma@autotriage.dev", UserRole.EMPLOYEE),
     ("Priya Nair", "priya.nair@autotriage.dev", UserRole.EMPLOYEE),
-    ("Marcus Webb", "marcus.webb@autotriage.dev", UserRole.EMPLOYEE),
-    ("Dana Okafor", "dana.okafor@autotriage.dev", UserRole.AGENT),
-    ("Leo Martins", "leo.martins@autotriage.dev", UserRole.AGENT),
-    ("Sofia Reyes", "sofia.reyes@autotriage.dev", UserRole.AGENT),
-    ("Jordan Blake", "jordan.blake@autotriage.dev", UserRole.ADMIN),
+    ("Rohan Deshmukh", "rohan.deshmukh@autotriage.dev", UserRole.EMPLOYEE),
+    ("Ananya Iyer", "ananya.iyer@autotriage.dev", UserRole.AGENT),
+    ("Karan Malhotra", "karan.malhotra@autotriage.dev", UserRole.AGENT),
+    ("Sneha Kulkarni", "sneha.kulkarni@autotriage.dev", UserRole.AGENT),
+    ("Vikram Rathore", "vikram.rathore@autotriage.dev", UserRole.ADMIN),
 ]
 
 # --------------------------------------------------------------------------- #
@@ -202,7 +202,7 @@ async def seed(reset: bool = False) -> None:
         # --- historical tickets ------------------------------------------ #
         classifier = await get_ai_classifier()
         scrubber = get_pii_scrubber()
-        agents = [users[e] for e in ("dana.okafor@autotriage.dev", "leo.martins@autotriage.dev", "sofia.reyes@autotriage.dev")]
+        agents = [users[e] for e in ("ananya.iyer@autotriage.dev", "karan.malhotra@autotriage.dev", "sneha.kulkarni@autotriage.dev")]
         rng = random.Random(42)
 
         created: list[Tickets] = []

@@ -18,7 +18,7 @@ export function Dialog({ open, onClose, children, className }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:p-8">
-      <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-[2px] animate-fade-in" onClick={onClose} />
+      <div className="fixed inset-0 bg-gray-900/50 dark:bg-black/60 backdrop-blur-[2px] animate-fade-in" onClick={onClose} />
       <div
         className={cn(
           'relative z-10 w-full max-w-3xl rounded-xl border border-border bg-card shadow-2xl animate-fade-in',

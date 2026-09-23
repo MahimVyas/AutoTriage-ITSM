@@ -88,7 +88,7 @@ export default function AdminAnalytics() {
           label="SLA breach rate"
           value={s ? `${s.sla_breach_rate}%` : '—'}
           sub={s ? `${s.sla_breach_count} breached of ${s.total_tickets}` : ''}
-          tone={s && s.sla_breach_rate > 20 ? 'text-red-600' : 'text-foreground'}
+          tone={s && s.sla_breach_rate > 20 ? 'text-red-600 dark:text-red-400' : 'text-foreground'}
         />
         <Kpi
           icon={Brain}

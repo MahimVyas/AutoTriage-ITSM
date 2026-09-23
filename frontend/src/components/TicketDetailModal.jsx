@@ -109,7 +109,7 @@ export default function TicketDetailModal({ ticketId, open, onClose, onChanged, 
       {loading && !ticket ? (
         <div className="p-10 text-center text-sm text-muted-foreground">Loading ticket…</div>
       ) : !ticket ? (
-        <div className="p-10 text-center text-sm text-red-500">{error || 'Ticket unavailable'}</div>
+        <div className="p-10 text-center text-sm text-red-500 dark:text-red-400">{error || 'Ticket unavailable'}</div>
       ) : (
         <div className="max-h-[85vh] overflow-y-auto">
           {/* Header */}
@@ -131,7 +131,11 @@ export default function TicketDetailModal({ ticketId, open, onClose, onChanged, 
               <span
                 className={cn(
                   'font-semibold',
-                  sla?.tone === 'bad' ? 'text-red-600' : sla?.tone === 'warn' ? 'text-amber-600' : 'text-muted-foreground'
+                  sla?.tone === 'bad'
+                    ? 'text-red-600 dark:text-red-400'
+                    : sla?.tone === 'warn'
+                      ? 'text-amber-600 dark:text-amber-400'
+                      : 'text-muted-foreground'
                 )}
               >
                 {sla?.label}
@@ -174,7 +178,7 @@ export default function TicketDetailModal({ ticketId, open, onClose, onChanged, 
                 <div className="grid gap-3 sm:grid-cols-3">
                   <Panel label="Confidence score">
                     <div className="flex items-center gap-2">
-                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
                         <div
                           className={cn(
                             'h-full rounded-full',
@@ -239,7 +243,7 @@ export default function TicketDetailModal({ ticketId, open, onClose, onChanged, 
                   </pre>
                 </Panel>
                 <div className="rounded-lg border border-emerald-200 bg-emerald-50/50 dark:border-emerald-900 dark:bg-emerald-950/50 p-3">
-                  <p className="mb-1.5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-emerald-700">
+                  <p className="mb-1.5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
                     <ShieldAlert className="h-3.5 w-3.5" /> Scrubbed (sent to AI)
                   </p>
                   <pre className="whitespace-pre-wrap break-words font-sans text-xs text-foreground">
@@ -291,7 +295,7 @@ export default function TicketDetailModal({ ticketId, open, onClose, onChanged, 
                   <BrainCircuit className="mt-0.5 h-4 w-4 shrink-0" />
                   <span>
                     Human-in-the-loop: any change here overrides the AI decision and is written to{' '}
-                    <code className="rounded bg-amber-100 px-1">ai_audit_logs</code> with your agent
+                    <code className="rounded bg-amber-100 px-1 dark:text-amber-900">ai_audit_logs</code> with your agent
                     id and timestamp.
                   </span>
                 </div>
@@ -358,7 +362,7 @@ export default function TicketDetailModal({ ticketId, open, onClose, onChanged, 
                       'rounded-md p-2.5 text-xs',
                       overrideMsg.ok
                         ? 'border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-300'
-                        : 'border border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950/60 dark:text-red-300 dark:border-red-900 dark:bg-red-950/60 dark:text-red-300'
+                        : 'border border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950/60 dark:text-red-300'
                     )}
                   >
                     {overrideMsg.text}

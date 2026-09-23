@@ -26,7 +26,7 @@ const STAGES = [
 export default function EmployeeView() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [email, setEmail] = useState('avery.chen@autotriage.dev')
+  const [email, setEmail] = useState('aarav.sharma@autotriage.dev')
   const [phase, setPhase] = useState('idle') // idle | running | done | error
   const [activeStage, setActiveStage] = useState(-1)
   const [result, setResult] = useState(null)
@@ -135,11 +135,11 @@ export default function EmployeeView() {
               className={cn(
                 'ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide',
                 phase === 'done'
-                  ? 'bg-emerald-100 text-emerald-700'
+                  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
                   : running
-                    ? 'bg-blue-100 text-blue-700 animate-pulse-soft'
+                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 animate-pulse-soft'
                     : phase === 'error'
-                      ? 'bg-red-100 text-red-700'
+                      ? 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300'
                       : 'bg-muted text-muted-foreground'
               )}
             >
@@ -173,7 +173,7 @@ export default function EmployeeView() {
                         ? 'bg-emerald-600 text-white'
                         : started
                           ? 'bg-blue-600 text-white'
-                          : 'bg-slate-200 dark:bg-slate-700 text-muted-foreground'
+                          : 'bg-gray-200 dark:bg-gray-700 text-muted-foreground'
                     )}
                   >
                     {finished ? <CheckCircle2 className="h-4 w-4" /> : <Icon className="h-4 w-4" />}
@@ -196,10 +196,10 @@ export default function EmployeeView() {
               <div className="flex flex-wrap items-center gap-2">
                 <CategoryBadge value={result.pipeline.classification.category} />
                 <SeverityBadge value={result.pipeline.classification.severity} />
-                <Badge className="bg-emerald-100 text-emerald-700 ring-emerald-200">
+                <Badge className="bg-emerald-100 text-emerald-700 ring-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:ring-emerald-900">
                   {Math.round(result.pipeline.classification.confidence * 100)}% confidence
                 </Badge>
-                <Badge className="bg-blue-100 text-blue-700 ring-blue-200">
+                <Badge className="bg-blue-100 text-blue-700 ring-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:ring-blue-900">
                   {result.pipeline.classification.tier.replace(/_/g, ' ')}
                 </Badge>
               </div>
@@ -214,7 +214,7 @@ export default function EmployeeView() {
                   <p>
                     🔒 {result.pipeline.pii.redaction_count} sensitive item
                     {result.pipeline.pii.redaction_count > 1 ? 's' : ''} replaced with{' '}
-                    <code className="rounded bg-slate-200 dark:bg-slate-700 px-1">{result.pipeline.pii.token}</code>:{' '}
+                    <code className="rounded bg-gray-200 dark:bg-gray-700 px-1">{result.pipeline.pii.token}</code>:{' '}
                     {Object.entries(result.pipeline.pii.redactions)
                       .map(([k, v]) => `${k}×${v}`)
                       .join(', ')}

@@ -77,11 +77,11 @@ async def _resolve_user(
         return user
     # Default demo employee so the prototype works without auth
     user = (
-        await session.execute(select(Users).where(Users.email == "avery.chen@autotriage.dev"))
+        await session.execute(select(Users).where(Users.email == "aarav.sharma@autotriage.dev"))
     ).scalar_one_or_none()
     if user:
         return user
-    user = Users(name="Avery Chen", email="avery.chen@autotriage.dev", role=UserRole.EMPLOYEE)
+    user = Users(name="Aarav Sharma", email="aarav.sharma@autotriage.dev", role=UserRole.EMPLOYEE)
     session.add(user)
     await session.flush()
     return user

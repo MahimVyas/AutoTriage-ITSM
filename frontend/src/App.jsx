@@ -143,7 +143,8 @@ export default function App() {
       </main>
 
       <footer className="mx-auto max-w-7xl px-4 pb-8 pt-2 text-center text-[11px] text-muted-foreground">
-        AutoTriage-ITSM prototype · FastAPI + PostgreSQL/pgvector + Redis/Celery + React
+        AutoTriage-ITSM prototype · FastAPI + PostgreSQL/pgvector + Redis/Celery + React · Built by{' '}
+        <span className="font-semibold text-foreground">Mahim Vyas</span>
       </footer>
 
       <TechStackModal open={techOpen} onClose={() => setTechOpen(false)} />

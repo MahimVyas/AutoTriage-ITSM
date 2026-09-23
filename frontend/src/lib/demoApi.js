@@ -192,13 +192,13 @@ const slaDeadline = (severity, from = Date.now()) => new Date(from + SLA_SECONDS
 // Reference data (mirrors seed.py)
 // --------------------------------------------------------------------- #
 const USERS = [
-  ['Avery Chen', 'avery.chen@autotriage.dev', 'EMPLOYEE'],
+  ['Aarav Sharma', 'aarav.sharma@autotriage.dev', 'EMPLOYEE'],
   ['Priya Nair', 'priya.nair@autotriage.dev', 'EMPLOYEE'],
-  ['Marcus Webb', 'marcus.webb@autotriage.dev', 'EMPLOYEE'],
-  ['Dana Okafor', 'dana.okafor@autotriage.dev', 'AGENT'],
-  ['Leo Martins', 'leo.martins@autotriage.dev', 'AGENT'],
-  ['Sofia Reyes', 'sofia.reyes@autotriage.dev', 'AGENT'],
-  ['Jordan Blake', 'jordan.blake@autotriage.dev', 'ADMIN'],
+  ['Rohan Deshmukh', 'rohan.deshmukh@autotriage.dev', 'EMPLOYEE'],
+  ['Ananya Iyer', 'ananya.iyer@autotriage.dev', 'AGENT'],
+  ['Karan Malhotra', 'karan.malhotra@autotriage.dev', 'AGENT'],
+  ['Sneha Kulkarni', 'sneha.kulkarni@autotriage.dev', 'AGENT'],
+  ['Vikram Rathore', 'vikram.rathore@autotriage.dev', 'ADMIN'],
 ].map(([name, email, role]) => ({ id: uuid(), name, email, role }))
 
 const userByEmail = (email) => USERS.find((u) => u.email === email)
@@ -222,7 +222,7 @@ const SEED_TICKETS = [
     summary: 'Intermittent remote-access failure triaged as NETWORK (P2), HITL-corrected after initial misroute.',
     override: {
       categoryFrom: 'SOFTWARE', note: 'Category corrected — actual root cause was network-side, not software.',
-      agent: 'dana.okafor@autotriage.dev', agoHours: 29,
+      agent: 'ananya.iyer@autotriage.dev', agoHours: 29,
     },
   },
   {
@@ -250,7 +250,7 @@ const SEED_TICKETS = [
     summary: 'Client application crash on attachments classified as SOFTWARE; severity raised after user-impact review.',
     override: {
       severityFrom: 'P4_LOW', note: 'Severity raised: multiple users affected, not a single-user issue.',
-      agent: 'leo.martins@autotriage.dev', agoHours: 49,
+      agent: 'karan.malhotra@autotriage.dev', agoHours: 49,
     },
   },
   {
@@ -270,7 +270,7 @@ const SEED_TICKETS = [
     summary: 'Building-wide wireless outage escalated to P1 after breaching its SLA window.',
     override: {
       severityFrom: 'P2_HIGH', note: 'Severity raised: multiple users affected, not a single-user issue.',
-      agent: 'leo.martins@autotriage.dev', agoHours: 7,
+      agent: 'karan.malhotra@autotriage.dev', agoHours: 7,
     },
   },
   {
@@ -290,7 +290,7 @@ const SEED_TICKETS = [
     summary: 'SSO blocker triaged as IAM_ACCESS (P3) after a HITL correction from an initial hardware misread.',
     override: {
       categoryFrom: 'HARDWARE', note: 'Misclassified as hardware; this is an IAM access request.',
-      agent: 'sofia.reyes@autotriage.dev', agoHours: 1.5,
+      agent: 'sneha.kulkarni@autotriage.dev', agoHours: 1.5,
     },
   },
   {

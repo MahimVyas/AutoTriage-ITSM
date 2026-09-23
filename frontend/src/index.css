@@ -27,29 +27,36 @@
 }
 
 .dark {
-  --background: 222 47% 10%;
-  --foreground: 210 40% 98%;
-  --card: 222 40% 14%;
-  --card-foreground: 210 40% 98%;
-  --muted: 217 33% 18%;
-  --muted-foreground: 215 20% 66%;
-  --border: 217 28% 21%;
-  --input-bg: 222 40% 17%;
+  /* Dark theme = neutral gray shades (no blue tint), darker surfaces */
+  --background: 0 0% 7%;
+  --foreground: 0 0% 94%;
+  --card: 0 0% 10%;
+  --card-foreground: 0 0% 94%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 61%;
+  --border: 0 0% 19%;
+  --input-bg: 0 0% 12%;
   --primary: 221 83% 58%;
-  --primary-foreground: 222 47% 10%;
-  --secondary: 217 33% 18%;
-  --secondary-foreground: 210 40% 98%;
-  --accent: 217 33% 22%;
-  --accent-foreground: 210 40% 98%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 15%;
+  --secondary-foreground: 0 0% 94%;
+  --accent: 0 0% 19%;
+  --accent-foreground: 0 0% 94%;
   --destructive: 0 72% 56%;
-  --destructive-foreground: 210 40% 98%;
-  --ring: 221 83% 58%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 0 0% 70%;
   color-scheme: dark;
 }
 
 @layer base {
   html {
     -webkit-font-smoothing: antialiased;
+  }
+  /* Theme bare `border` / `border-t` utilities too (shadcn convention) */
+  *,
+  ::before,
+  ::after {
+    border-color: hsl(var(--border));
   }
   body {
     @apply bg-background text-foreground font-sans;
