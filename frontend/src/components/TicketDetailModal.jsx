@@ -23,6 +23,9 @@ import {
   TierBadge,
 } from '@/components/ui/badge'
 import { cn, CATEGORIES, SEVERITIES, TIER_LABELS, formatDT, timeLeft } from '@/lib/utils'
+import CountUp from '@/components/bits/CountUp'
+import DecryptedText from '@/components/bits/DecryptedText'
+import ClickSpark from '@/components/bits/ClickSpark'
 
 export default function TicketDetailModal({ ticketId, open, onClose, onChanged, agents = [] }) {
   const [ticket, setTicket] = useState(null)
@@ -124,7 +127,9 @@ export default function TicketDetailModal({ ticketId, open, onClose, onChanged, 
                 </span>
               )}
             </div>
-            <h2 className="mt-1.5 text-base font-semibold text-foreground">{ticket.title}</h2>
+            <h2 className="mt-1.5 text-base font-semibold text-foreground">
+              <DecryptedText text={ticket.title} animateOn="view" sequential speed={25} />
+            </h2>
             <p className="mt-0.5 text-xs text-muted-foreground">
               {ticket.id} · raised by {ticket.created_by?.name || 'unknown'} ·{' '}
               {formatDT(ticket.created_at)} · SLA {formatDT(ticket.sla_deadline)} (
@@ -192,7 +197,7 @@ export default function TicketDetailModal({ ticketId, open, onClose, onChanged, 
                         />
                       </div>
                       <span className="text-sm font-bold tabular-nums">
-                        {(ticket.confidence_score * 100).toFixed(0)}%
+                        <CountUp to={Math.round(ticket.confidence_score * 100)} duration={1.2} />%
                       </span>
                     </div>
                   </Panel>
@@ -343,7 +348,11 @@ export default function TicketDetailModal({ ticketId, open, onClose, onChanged, 
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2">
+                <ClickSpark
+                  className="flex flex-wrap items-center gap-2"
+                  sparkColor="#3b82f6"
+                  sparkRadius={16}
+                >
                   <Button onClick={applyOverride} loading={busy}>
                     {!busy && <Save className="h-4 w-4" />} Apply HITL override
                   </Button>
@@ -354,7 +363,7 @@ export default function TicketDetailModal({ ticketId, open, onClose, onChanged, 
                   >
                     {!busy && <AlertOctagon className="h-4 w-4" />} Escalate now
                   </Button>
-                </div>
+                </ClickSpark>
 
                 {overrideMsg && (
                   <p

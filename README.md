@@ -96,7 +96,7 @@ flowchart LR
 
 | Layer | Technologies |
 |---|---|
-| **Frontend** | React 18 · Vite · Tailwind CSS · Lucide icons · shadcn-style UI primitives · Recharts |
+| **Frontend** | React 18 · Vite · Tailwind CSS · Lucide icons · shadcn-style UI primitives · Recharts · [React Bits](https://reactbits.dev) animated components |
 | **Backend** | FastAPI (Python 3.11+) · Pydantic v2 · SQLAlchemy 2 async · Alembic · Uvicorn |
 | **Data** | PostgreSQL 16 + pgvector (1536-d vectors, cosine index) |
 | **Queue** | Redis 7 · Celery worker + beat (delayed SLA tasks, 30 s safety-net sweeper) |

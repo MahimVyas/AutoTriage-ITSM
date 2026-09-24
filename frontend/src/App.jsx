@@ -9,6 +9,10 @@ import { Tabs, Tab } from '@/components/ui/tabs'
 import Button from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import api from '@/lib/api'
+import BlurText from '@/components/bits/BlurText'
+import DecryptedText from '@/components/bits/DecryptedText'
+import ShinyText from '@/components/bits/ShinyText'
+import Magnet from '@/components/bits/Magnet'
 
 const ROLES = [
   { key: 'employee', label: 'Employee', icon: UserRound, description: 'Submit & track requests' },
@@ -112,9 +116,16 @@ export default function App() {
                 <Activity className="h-5 w-5" />
               </span>
               <div className="leading-tight">
-                <h1 className="text-sm font-bold tracking-tight text-foreground">AutoTriage-ITSM</h1>
-                <p className="hidden text-[11px] text-muted-foreground xl:block">
-                  AI-augmented ticketing · SLA escalation · HITL
+                <h1 className="text-sm font-bold tracking-tight text-foreground">
+                  <DecryptedText text="AutoTriage-ITSM" animateOn="view" sequential speed={45} maxIterations={14} />
+                </h1>
+                <p className="hidden text-[11px] xl:block">
+                  <ShinyText
+                    text="AI-augmented ticketing · SLA escalation · HITL"
+                    color="hsl(var(--muted-foreground))"
+                    shineColor="hsl(var(--foreground))"
+                    speed={4}
+                  />
                 </p>
               </div>
             </div>
@@ -146,26 +157,30 @@ export default function App() {
               </span>
 
               {/* ------------------------------------------- Tech Stack button */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setTechOpen(true)}
-                aria-label="Open tech stack and architecture"
-              >
-                <Layers className="h-3.5 w-3.5" />
-                <span className="hidden lg:inline">Tech Stack</span>
-              </Button>
+              <Magnet padding={40} magnetStrength={4}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setTechOpen(true)}
+                  aria-label="Open tech stack and architecture"
+                >
+                  <Layers className="h-3.5 w-3.5" />
+                  <span className="hidden lg:inline">Tech Stack</span>
+                </Button>
+              </Magnet>
 
               {/* ------------------------------------------------ Dark toggle */}
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={toggleTheme}
-                aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-                title={dark ? 'Light mode' : 'Dark mode'}
-              >
-                {dark ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4" />}
-              </Button>
+              <Magnet padding={40} magnetStrength={4}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={toggleTheme}
+                  aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+                  title={dark ? 'Light mode' : 'Dark mode'}
+                >
+                  {dark ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4" />}
+                </Button>
+              </Magnet>
 
               {/* Role tabs sit inline in the navbar from `md` up */}
               <div className="hidden md:block">{roleTabs}</div>
@@ -180,9 +195,13 @@ export default function App() {
       {/* -------------------------------------------------------------- Body */}
       <main className="mx-auto max-w-7xl px-4 py-6">
         <div className="mb-5">
-          <h2 className="text-lg font-semibold text-foreground">
-            {ROLES.find((r) => r.key === role)?.description}
-          </h2>
+          <BlurText
+            tag="h2"
+            key={role}
+            text={ROLES.find((r) => r.key === role)?.description || ''}
+            className="text-lg font-semibold text-foreground"
+            delay={50}
+          />
           <p className="text-xs text-muted-foreground">
             {role === 'employee' &&
               'Describe your issue — PII is scrubbed, the AI classifies it, and SLA clocks start immediately.'}
@@ -200,7 +219,13 @@ export default function App() {
 
       <footer className="mx-auto max-w-7xl px-4 pb-8 pt-2 text-center text-[11px] text-muted-foreground">
         AutoTriage-ITSM prototype · FastAPI + PostgreSQL/pgvector + Redis/Celery + React · Built by{' '}
-        <span className="font-semibold text-foreground">Mahim Vyas</span>
+        <ShinyText
+          text="Mahim Vyas"
+          color="hsl(var(--foreground))"
+          shineColor="hsl(var(--primary))"
+          speed={4}
+          className="font-semibold"
+        />
       </footer>
 
       <TechStackModal open={techOpen} onClose={() => setTechOpen(false)} />

@@ -15,6 +15,8 @@ import { Button } from '@/components/ui/button'
 import { Input, Label, Textarea } from '@/components/ui/input'
 import { Badge, SeverityBadge, CategoryBadge } from '@/components/ui/badge'
 import { cn, formatDT } from '@/lib/utils'
+import DecryptedText from '@/components/bits/DecryptedText'
+import ClickSpark from '@/components/bits/ClickSpark'
 
 const STAGES = [
   { key: 'pii', label: 'PII scrubbing', hint: 'Regex redaction before any AI call', icon: ShieldCheck },
@@ -65,7 +67,14 @@ export default function EmployeeView() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <FileText className="h-4 w-4 text-primary" /> Report an issue
+            <FileText className="h-4 w-4 text-primary" />
+            <DecryptedText
+              text="Report an issue"
+              animateOn="hover"
+              speed={40}
+              maxIterations={8}
+              useOriginalCharsOnly
+            />
           </CardTitle>
           <CardDescription>
             Describe the problem in plain language — sensitive data is redacted before AI processing.
@@ -111,10 +120,12 @@ export default function EmployeeView() {
               />
             </div>
 
-            <Button type="submit" loading={running} className="w-full" size="lg">
-              {!running && <Send className="h-4 w-4" />}
-              {running ? 'Ticking through the pipeline…' : 'Submit ticket'}
-            </Button>
+            <ClickSpark className="w-full" sparkRadius={16}>
+              <Button type="submit" loading={running} className="w-full" size="lg">
+                {!running && <Send className="h-4 w-4" />}
+                {running ? 'Ticking through the pipeline…' : 'Submit ticket'}
+              </Button>
+            </ClickSpark>
 
             {phase === 'error' && (
               <div className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-xs text-red-700 dark:border-red-900 dark:bg-red-950/60 dark:text-red-300">
@@ -130,7 +141,14 @@ export default function EmployeeView() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Sparkles className="h-4 w-4 text-primary" /> Triage pipeline
+            <Sparkles className="h-4 w-4 text-primary" />
+            <DecryptedText
+              text="Triage pipeline"
+              animateOn="hover"
+              speed={40}
+              maxIterations={8}
+              useOriginalCharsOnly
+            />
             <span
               className={cn(
                 'ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide',

@@ -23,6 +23,8 @@ import api from '@/lib/api'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import CountUp from '@/components/bits/CountUp'
+import ShinyText from '@/components/bits/ShinyText'
 
 const BAR_COLORS = ['#2563eb', '#0891b2', '#7c3aed', '#059669', '#e11d48', '#94a3b8']
 const TIER_COLORS = { TIER1_LOCAL_SLM: '#059669', TIER2_CLOUD_LLM: '#2563eb', RULE_FALLBACK: '#94a3b8' }
@@ -57,7 +59,14 @@ export default function AdminAnalytics() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h2 className="text-lg font-semibold text-foreground">Operations analytics</h2>
+          <h2 className="text-lg font-semibold text-foreground">
+            <ShinyText
+              text="Operations analytics"
+              color="hsl(var(--foreground))"
+              shineColor="hsl(var(--primary))"
+              speed={4}
+            />
+          </h2>
           <p className="text-xs text-muted-foreground">
             KPIs across triage quality, SLA health and AI cost efficiency.
           </p>
@@ -79,14 +88,15 @@ export default function AdminAnalytics() {
           icon={Ticket}
           iconClass="bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300"
           label="Total tickets"
-          value={s ? s.total_tickets.toLocaleString() : '—'}
+          value={s ? s.total_tickets : '—'}
           sub={s ? `${s.open_tickets} currently open` : ''}
         />
         <Kpi
           icon={ShieldAlert}
           iconClass="bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-300"
           label="SLA breach rate"
-          value={s ? `${s.sla_breach_rate}%` : '—'}
+          value={s ? s.sla_breach_rate : '—'}
+          suffix={s ? '%' : ''}
           sub={s ? `${s.sla_breach_count} breached of ${s.total_tickets}` : ''}
           tone={s && s.sla_breach_rate > 20 ? 'text-red-600 dark:text-red-400' : 'text-foreground'}
         />
@@ -94,7 +104,8 @@ export default function AdminAnalytics() {
           icon={Brain}
           iconClass="bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-300"
           label="AI classification accuracy"
-          value={s ? `${s.ai_accuracy_rate}%` : '—'}
+          value={s ? s.ai_accuracy_rate : '—'}
+          suffix={s ? '%' : ''}
           sub={
             s
               ? `${s.hitl_override_count} HITL overrides · avg conf ${Math.round(
@@ -107,7 +118,8 @@ export default function AdminAnalytics() {
           icon={PiggyBank}
           iconClass="bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-300"
           label="Cost saved via Tier-1"
-          value={s ? `$${s.cost_saved_usd.toFixed(2)}` : '—'}
+          value={s ? s.cost_saved_usd : '—'}
+          prefix={s ? '$' : ''}
           sub={
             s
               ? `${s.tier1_count} local vs ${s.tier2_count} cloud calls ($${s.estimated_ai_spend_usd.toFixed(2)} spend)`
@@ -242,7 +254,7 @@ export default function AdminAnalytics() {
   )
 }
 
-function Kpi({ icon: Icon, iconClass, label, value, sub, tone = 'text-foreground' }) {
+function Kpi({ icon: Icon, iconClass, label, value, sub, prefix = '', suffix = '', tone = 'text-foreground' }) {
   return (
     <Card>
       <CardContent className="p-4">
@@ -252,7 +264,17 @@ function Kpi({ icon: Icon, iconClass, label, value, sub, tone = 'text-foreground
           </span>
           <p className="text-xs font-medium text-muted-foreground">{label}</p>
         </div>
-        <p className={cn('mt-2 text-2xl font-bold tracking-tight tabular-nums', tone)}>{value}</p>
+        <p className={cn('mt-2 text-2xl font-bold tracking-tight tabular-nums', tone)}>
+          {typeof value === 'number' ? (
+            <>
+              {prefix}
+              <CountUp to={value} separator="," delay={0.05} duration={1.6} />
+              {suffix}
+            </>
+          ) : (
+            value
+          )}
+        </p>
         {sub && <p className="mt-0.5 text-[11px] text-muted-foreground">{sub}</p>}
       </CardContent>
     </Card>
@@ -263,7 +285,9 @@ function Fact({ label, value }) {
   return (
     <div className="rounded-lg border border-border bg-muted p-3">
       <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</dt>
-      <dd className="text-lg font-bold text-foreground tabular-nums">{value}</dd>
+      <dd className="text-lg font-bold text-foreground tabular-nums">
+        {typeof value === 'number' ? <CountUp to={value} separator="," duration={1.4} /> : value}
+      </dd>
     </div>
   )
 }

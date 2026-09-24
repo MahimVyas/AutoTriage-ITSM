@@ -3,6 +3,7 @@ import { Layers, Info, MousePointerClick } from 'lucide-react'
 import { Dialog } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import DecryptedText from '@/components/bits/DecryptedText'
 
 /* =========================================================================
  * Flow diagram model
@@ -311,7 +312,8 @@ export default function TechStackModal({ open, onClose }) {
         {/* header */}
         <div className="border-b border-border bg-muted/60 px-5 py-4 pr-12">
           <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
-            <Layers className="h-4 w-4 text-primary" /> AutoTriage-ITSM — Architecture &amp; Tech Stack
+            <Layers className="h-4 w-4 text-primary" />
+            <DecryptedText text="AutoTriage-ITSM — Architecture & Tech Stack" animateOn="view" sequential speed={22} />
           </h2>
           <p className="mt-0.5 text-xs text-muted-foreground">
             Request flow from submission to escalation, with the technology behind every block.

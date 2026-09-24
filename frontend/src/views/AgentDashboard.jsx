@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/badge'
 import { cn, CATEGORIES, SEVERITIES, STATUSES, timeLeft, formatDT } from '@/lib/utils'
 import TicketDetailModal from '@/components/TicketDetailModal'
+import CountUp from '@/components/bits/CountUp'
 
 const SLA_OPTIONS = [
   { value: '', label: 'All SLA states' },
@@ -340,7 +341,9 @@ function Stat({ label, value, icon: Icon, tone = 'text-foreground' }) {
           <Icon className="h-4 w-4" />
         </span>
         <div>
-          <p className={cn('text-lg font-bold leading-tight tabular-nums', tone)}>{value}</p>
+          <p className={cn('text-lg font-bold leading-tight tabular-nums', tone)}>
+            <CountUp to={Number(value) || 0} separator="," delay={0.1} duration={1.1} />
+          </p>
           <p className="text-[11px] text-muted-foreground">{label}</p>
         </div>
       </CardContent>
