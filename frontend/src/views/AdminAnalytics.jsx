@@ -55,7 +55,7 @@ export default function AdminAnalytics() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <h2 className="text-lg font-semibold text-foreground">Operations analytics</h2>
           <p className="text-xs text-muted-foreground">
@@ -133,8 +133,8 @@ export default function AdminAnalytics() {
                     dataKey="category"
                     tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
                     interval={0}
-                    angle={-16}
-                    height={50}
+                    angle={-35}
+                    height={60}
                     axisLine={false}
                     tickLine={false}
                   />

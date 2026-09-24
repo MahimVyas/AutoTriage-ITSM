@@ -240,7 +240,7 @@ export default function EmployeeView() {
                 </ol>
               </div>
 
-              <div className="flex items-center justify-between border-t pt-2 text-[11px] text-muted-foreground">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-t pt-2 text-[11px] text-muted-foreground">
                 <span>
                   Ticket <code className="font-mono">{result.ticket.id.slice(0, 8)}</code> created
                 </span>

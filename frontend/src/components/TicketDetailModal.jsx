@@ -256,7 +256,7 @@ export default function TicketDetailModal({ ticketId, open, onClose, onChanged, 
             {/* -------------------------------------------------- steps */}
             {tab === 'steps' && (
               <div className="space-y-3 animate-fade-in">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     AI-generated steps for the L1 agent
                   </p>
@@ -343,7 +343,7 @@ export default function TicketDetailModal({ ticketId, open, onClose, onChanged, 
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <Button onClick={applyOverride} loading={busy}>
                     {!busy && <Save className="h-4 w-4" />} Apply HITL override
                   </Button>
@@ -485,7 +485,7 @@ export default function TicketDetailModal({ ticketId, open, onClose, onChanged, 
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between border-t border-border bg-muted px-5 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-muted px-5 py-3">
             <p className="text-[11px] text-muted-foreground">
               Assigned: {ticket.assigned_agent?.name || 'unassigned'}
             </p>

@@ -44,80 +44,98 @@ export default function App() {
   const online = health?.status === 'healthy' && !health?.demo
   const demo = health?.demo === true
 
+  // Role switcher — rendered inline on large screens and as its own centred
+  // row below `lg` so labels always fit without overflowing the header.
+  const roleTabs = (
+    <Tabs>
+      {ROLES.map(({ key, label, icon: Icon }) => (
+        <Tab
+          key={key}
+          active={role === key}
+          onClick={() => setRole(key)}
+          aria-label={label}
+          title={label}
+        >
+          <Icon className="h-3.5 w-3.5" />
+          <span className="hidden sm:inline">{label}</span>
+        </Tab>
+      ))}
+    </Tabs>
+  )
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* ------------------------------------------------------------ Header */}
       <header className="sticky top-0 z-40 border-b border-border bg-background backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3">
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white shadow-sm">
-              <Activity className="h-5 w-5" />
-            </span>
-            <div className="leading-tight">
-              <h1 className="text-sm font-bold tracking-tight text-foreground">AutoTriage-ITSM</h1>
-              <p className="text-[11px] text-muted-foreground">
-                AI-augmented ticketing · SLA escalation · HITL
-              </p>
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="flex items-center gap-2 py-2.5 sm:gap-4 sm:py-3">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white shadow-sm">
+                <Activity className="h-5 w-5" />
+              </span>
+              <div className="leading-tight">
+                <h1 className="text-sm font-bold tracking-tight text-foreground">AutoTriage-ITSM</h1>
+                <p className="hidden text-[11px] text-muted-foreground xl:block">
+                  AI-augmented ticketing · SLA escalation · HITL
+                </p>
+              </div>
+            </div>
+
+            <div className="ml-auto flex items-center gap-2 sm:gap-3">
+              <span
+                className={cn(
+                  'hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium sm:inline-flex',
+                  online
+                    ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-300'
+                    : demo
+                      ? 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950/60 dark:text-amber-300'
+                      : 'border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950/60 dark:text-red-300'
+                )}
+              >
+                <span
+                  className={cn(
+                    'h-1.5 w-1.5 rounded-full',
+                    online ? 'bg-emerald-500' : demo ? 'bg-amber-500' : 'bg-red-500 animate-pulse'
+                  )}
+                />
+                {online
+                  ? 'API connected'
+                  : demo
+                    ? 'Demo mode · in-memory'
+                    : health
+                      ? 'API degraded'
+                      : 'API checking…'}
+              </span>
+
+              {/* ------------------------------------------- Tech Stack button */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setTechOpen(true)}
+                aria-label="Open tech stack and architecture"
+              >
+                <Layers className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Tech Stack</span>
+              </Button>
+
+              {/* ------------------------------------------------ Dark toggle */}
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setDark((d) => !d)}
+                aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+                title={dark ? 'Light mode' : 'Dark mode'}
+              >
+                {dark ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4" />}
+              </Button>
+
+              {/* Role tabs live inline from `lg` up */}
+              <div className="hidden lg:block">{roleTabs}</div>
             </div>
           </div>
 
-          <div className="ml-auto flex items-center gap-3">
-            <span
-              className={cn(
-                'hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium sm:inline-flex',
-                online
-                  ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-300'
-                  : demo
-                    ? 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950/60 dark:text-amber-300'
-                    : 'border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950/60 dark:text-red-300'
-              )}
-            >
-              <span
-                className={cn(
-                  'h-1.5 w-1.5 rounded-full',
-                  online ? 'bg-emerald-500' : demo ? 'bg-amber-500' : 'bg-red-500 animate-pulse'
-                )}
-              />
-              {online
-                ? 'API connected'
-                : demo
-                  ? 'Demo mode · in-memory'
-                  : health
-                    ? 'API degraded'
-                    : 'API checking…'}
-            </span>
-
-            {/* ------------------------------------------- Tech Stack button */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setTechOpen(true)}
-              aria-label="Open tech stack and architecture"
-            >
-              <Layers className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Tech Stack</span>
-            </Button>
-
-            {/* ------------------------------------------------ Dark toggle */}
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setDark((d) => !d)}
-              aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-              title={dark ? 'Light mode' : 'Dark mode'}
-            >
-              {dark ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4" />}
-            </Button>
-
-            <Tabs>
-              {ROLES.map(({ key, label, icon: Icon }) => (
-                <Tab key={key} active={role === key} onClick={() => setRole(key)}>
-                  <Icon className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">{label}</span>
-                </Tab>
-              ))}
-            </Tabs>
-          </div>
+          {/* Role switcher gets its own centred row below `lg` */}
+          <div className="flex justify-center pb-2.5 sm:pb-3 lg:hidden">{roleTabs}</div>
         </div>
       </header>
 

@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 export function Tabs({ className, children, ...props }) {
   return (
     <div
-      className={cn('inline-flex items-center gap-1 rounded-lg bg-muted p-1', className)}
+      className={cn('inline-flex flex-wrap items-center gap-1 rounded-lg bg-muted p-1', className)}
       {...props}
     >
       {children}

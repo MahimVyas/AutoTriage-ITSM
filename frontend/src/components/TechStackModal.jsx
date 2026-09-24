@@ -184,7 +184,7 @@ function FlowDiagram({ activeId, onHover }) {
   return (
     <svg
       viewBox="0 0 1000 500"
-      className="w-full"
+      className="w-full min-w-[720px]"
       role="img"
       aria-label="AutoTriage-ITSM request flow diagram"
     >
@@ -245,6 +245,7 @@ function FlowDiagram({ activeId, onHover }) {
             transform={`translate(${n.x}, ${n.y})`}
             onMouseEnter={() => onHover(n.id)}
             onMouseLeave={() => onHover(null)}
+            onClick={() => onHover(active ? null : n.id)}
             onFocus={() => onHover(n.id)}
             onBlur={() => onHover(null)}
             tabIndex={0}
@@ -325,11 +326,15 @@ export default function TechStackModal({ open, onClose }) {
                 Live request flow
               </p>
               <p className="flex items-center gap-1 text-[11px] text-muted-foreground">
-                <MousePointerClick className="h-3.5 w-3.5" /> hover a block for details
+                <MousePointerClick className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">hover a block for details</span>
+                <span className="sm:hidden">tap a block · swipe to pan</span>
               </p>
             </div>
 
-            <FlowDiagram activeId={activeId} onHover={setActiveId} />
+            <div className="overflow-x-auto">
+              <FlowDiagram activeId={activeId} onHover={setActiveId} />
+            </div>
 
             {/* legend */}
             <div className="mt-1 flex flex-wrap gap-3 text-[10.5px] font-medium text-muted-foreground">
@@ -402,7 +407,7 @@ export default function TechStackModal({ open, onClose }) {
         </div>
 
         {/* footer */}
-        <div className="flex items-center justify-between border-t border-border bg-muted/60 px-5 py-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-muted/60 px-5 py-3">
           <p className="text-[11px] text-muted-foreground">
             PII → Tiered AI → Hybrid RAG → Redis SLA → HITL audit
           </p>
