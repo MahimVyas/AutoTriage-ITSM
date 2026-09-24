@@ -101,3 +101,49 @@
     r: 5.5;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Animated light/dark switch — the new theme irises out from the      */
+/* toggle button (View Transitions API); a soft radial flash covers    */
+/* browsers without view transitions. --vt-x/--vt-y are set in App.jsx */
+/* to the toggle button's centre before the switch.                    */
+/* ------------------------------------------------------------------ */
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0vmax at var(--vt-x, 50%) var(--vt-y, 50%));
+  }
+  to {
+    clip-path: circle(150vmax at var(--vt-x, 50%) var(--vt-y, 50%));
+  }
+}
+
+::view-transition-old(root) {
+  /* keep the outgoing theme still while the new one irises in over it */
+  animation: none;
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+  animation: theme-reveal 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+html.theme-flash::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--vt-x, 50%) var(--vt-y, 50%),
+    rgb(148 163 184 / 0.45),
+    transparent 60%
+  );
+  animation: theme-flash 0.5s ease-out forwards;
+}
+
+@keyframes theme-flash {
+  to {
+    opacity: 0;
+  }
+}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { flushSync } from 'react-dom'
 import { UserRound, Headset, BarChart3, Activity, Layers, Moon, Sun } from 'lucide-react'
 import EmployeeView from '@/views/EmployeeView'
 import AgentDashboard from '@/views/AgentDashboard'
@@ -34,6 +35,43 @@ export default function App() {
     window.localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light')
   }, [dark])
 
+  // Flip the theme with an animated iris reveal that expands out of the
+  // toggle button (View Transitions API), falling back to a soft radial
+  // flash — or an instant switch when the user prefers reduced motion.
+  const applyTheme = (next) => {
+    document.documentElement.classList.toggle('dark', next)
+    window.localStorage.setItem(THEME_KEY, next ? 'dark' : 'light')
+    flushSync(() => setDark(next))
+  }
+
+  const toggleTheme = (e) => {
+    const next = !dark
+    const rect = e.currentTarget?.getBoundingClientRect?.()
+    document.documentElement.style.setProperty(
+      '--vt-x',
+      `${rect ? rect.left + rect.width / 2 : window.innerWidth / 2}px`
+    )
+    document.documentElement.style.setProperty(
+      '--vt-y',
+      `${rect ? rect.top + rect.height / 2 : window.innerHeight / 2}px`
+    )
+
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      applyTheme(next)
+      return
+    }
+    if (typeof document.startViewTransition === 'function') {
+      document.startViewTransition(() => applyTheme(next)).finished.catch(() => {})
+    } else {
+      applyTheme(next)
+      const root = document.documentElement
+      root.classList.remove('theme-flash')
+      void root.offsetWidth // restart the fallback animation
+      root.classList.add('theme-flash')
+      window.setTimeout(() => root.classList.remove('theme-flash'), 500)
+    }
+  }
+
   useEffect(() => {
     api
       .health()
@@ -44,8 +82,8 @@ export default function App() {
   const online = health?.status === 'healthy' && !health?.demo
   const demo = health?.demo === true
 
-  // Role switcher — rendered inline on large screens and as its own centred
-  // row below `lg` so labels always fit without overflowing the header.
+  // Role switcher — rendered inline in the navbar from `md` up and as its
+  // own centred row below `md` so labels always fit without overflowing.
   const roleTabs = (
     <Tabs>
       {ROLES.map(({ key, label, icon: Icon }) => (
@@ -84,7 +122,7 @@ export default function App() {
             <div className="ml-auto flex items-center gap-2 sm:gap-3">
               <span
                 className={cn(
-                  'hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium sm:inline-flex',
+                  'hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium lg:inline-flex',
                   online
                     ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-300'
                     : demo
@@ -115,27 +153,27 @@ export default function App() {
                 aria-label="Open tech stack and architecture"
               >
                 <Layers className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Tech Stack</span>
+                <span className="hidden lg:inline">Tech Stack</span>
               </Button>
 
               {/* ------------------------------------------------ Dark toggle */}
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => setDark((d) => !d)}
+                onClick={toggleTheme}
                 aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
                 title={dark ? 'Light mode' : 'Dark mode'}
               >
                 {dark ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4" />}
               </Button>
 
-              {/* Role tabs live inline from `lg` up */}
-              <div className="hidden lg:block">{roleTabs}</div>
+              {/* Role tabs sit inline in the navbar from `md` up */}
+              <div className="hidden md:block">{roleTabs}</div>
             </div>
           </div>
 
-          {/* Role switcher gets its own centred row below `lg` */}
-          <div className="flex justify-center pb-2.5 sm:pb-3 lg:hidden">{roleTabs}</div>
+          {/* Role switcher gets its own centred row only below `md` */}
+          <div className="flex justify-center pb-2.5 sm:pb-3 md:hidden">{roleTabs}</div>
         </div>
       </header>
 
